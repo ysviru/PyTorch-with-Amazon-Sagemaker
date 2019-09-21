@@ -15,10 +15,15 @@ import torch.optim as optim
 
 from torch.nn.init import xavier_uniform_ as xavier_uniform
 
+################################################################################################
+# Using a logger to log information is the key for Sagemaker HyperparameterTuner instance to
+# associate metric values to each hyperparameter setting.
+# For more information, see the comments in the test() function.
+################################################################################################
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler(sys.stdout))
-
+################################################################################################
 
 class DefaultHyperParameters:
     NUM_EPOCHS = 20
@@ -119,10 +124,21 @@ def test(model, test_loader, device, mode="Test"):
     print("{}: accuracy={}".format(mode, ((correct * 100.0) / total)))
     test_loss /= len(test_loader.dataset)
     print("{}: loss = {}".format(mode, test_loss))
+
+    ################################################################################################
+    # The following statement is the key for hyperparameter tuning with Sagemaker.
+    # These logs are accessed by Sagemaker to quantify the loss for the given hyperparameter setting
+    # and thus to evaluate each hyperparameter setting.
+
+    # Note: Following is the corresponding code in the accompanying jupyter notebook,
+    #       metric_definitions = [{'Name': 'average test loss',
+    #                              'Regex': 'Test set: Average loss: ([0-9\\.]+)'}]
+    # The above 'Regex' can only work given the following string to logger.info() function below.
+    ################################################################################################
     logger.info('Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
-
+    ################################################################################################
 
 def save_model(model, model_dir):
     path = os.path.join(model_dir, 'model.pth')
