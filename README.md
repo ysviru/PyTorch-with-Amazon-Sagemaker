@@ -20,7 +20,7 @@
    5) Define a HyperparameterTuner instance that wraps the estimator (sagemaker.pytorch.PyTorch) instance. 
    6) Use the HyperparameterTuner instance we perform model training. 
    
-   ### Note about entry point script that defines the custom PyTorch model
+   ### Notes about the entry-point python script that defines the custom PyTorch model
    In point 4) above, the python script defines the following: 
    1) logger instance for logging metric information such that the logged metric values can be used by HyperparameterTuner to decide which hyperparameter setting is better.  
    2) PyTorch model defined with class Net(). This is a simple feedforward network with two layers initialized with Xavier Glorot and Yoshua Bengio 2010 method of weight initialization.   
